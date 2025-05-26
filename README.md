@@ -1,4 +1,4 @@
-Tabii, işte tam **README.md** formatında:
+
 
 ````markdown
 # Kün Link Kısaltıcı (kpdk-url)
