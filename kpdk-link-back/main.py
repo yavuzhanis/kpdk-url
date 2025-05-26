@@ -2,10 +2,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from .database import Base, engine, SessionLocal
-from models import Url
-from utils import rastgele_kod, qrcode_uret
+from .models import Url
+from .utils import rastgele_kod, qrcode_uret
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Kün Link Kısaltıcı", version="1.0.0")
