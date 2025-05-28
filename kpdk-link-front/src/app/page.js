@@ -6,17 +6,32 @@ export default function Home() {
   const [url, setUrl] = useState("")
   const [shortUrl, setShortUrl] = useState("")
   const [qr, setQr] = useState("")
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const res = await fetch("http://127.0.0.1:8000/kisa-url", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uzun_url: url }),
-    })
-    const data = await res.json()
-    setShortUrl(data.kisa_url)
-    setQr(data.qr_base64)
+    setError("")
+    setShortUrl("")
+    setQr("")
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/kisa-url`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uzun_url: url }),
+      })
+
+      if (!res.ok) {
+        throw new Error("API hatası oluştu.")
+      }
+
+      const data = await res.json()
+      setShortUrl(data.kisa_url)
+      setQr(data.qr_base64)
+    } catch (err) {
+      setError("Kısaltma işlemi başarısız oldu. Lütfen tekrar deneyin.")
+      console.error(err)
+    }
   }
 
   return (
@@ -40,6 +55,12 @@ export default function Home() {
             🔧 Kısalt
           </button>
         </form>
+
+        {error && (
+          <div className="mt-4 text-red-600 text-center font-medium">
+            ⚠️ {error}
+          </div>
+        )}
 
         {shortUrl && (
           <div className="mt-8 bg-gray-100 p-4 rounded-lg text-center shadow-inner">
@@ -67,6 +88,5 @@ export default function Home() {
         )}
       </div>
     </main>
-
   )
 }
